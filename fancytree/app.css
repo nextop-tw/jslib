@@ -1,0 +1,26 @@
+.fancytree-active .fancytree-title{
+	background-color: #B0C4DE;
+	/**color: #fff;*/
+}
+
+.fancytree-selected .fancytree-title{
+	background-color: #B0C4DE;
+	/**color: #fff;*/
+}
+
+.fancytree-treefocus .fancytree-selected .fancytree-title {
+  background-color: #B0C4DE;
+  /**color: #fff;*/
+}
+
+
+
+span.fancytree-node:hover {
+       background: #f2f6f9 !important;
+       color: #5b9bd1 !important;
+       cursor:pointer;
+}
+
+span.fancytree-node:hover > span.fancytree-title{
+       color: #5b9bd1 !important;
+}
