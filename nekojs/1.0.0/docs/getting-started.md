@@ -6,6 +6,36 @@ NekoJS 是輕量的前端工具庫，以純 ES Module 組成，**無需打包工
 
 ## 引入方式
 
+### 透過 jsDelivr（推薦用於正式環境）
+
+直接從 CDN 引入，指定版本號確保穩定：
+
+```html
+<!-- Custom Element（推薦，不用寫 JS） -->
+<script type="module" src="https://cdn.jsdelivr.net/gh/nextop-tw/jslib@main/nekojs/1.0.0/elements/neko.js"></script>
+
+<!-- 或 Vue 3 響應式版本 -->
+<script type="module" src="https://cdn.jsdelivr.net/gh/nextop-tw/jslib@main/nekojs/1.0.0/elements/neko-vue3.js"></script>
+```
+
+或引入打包後的單一檔案（IIFE，含全部模組）：
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/nextop-tw/jslib@main/nekojs/1.0.0/neko-app.min.js"></script>
+```
+
+或以 ESM 方式引入打包檔：
+
+```js
+import neko from 'https://cdn.jsdelivr.net/gh/nextop-tw/jslib@main/nekojs/1.0.0/neko-app.esm.min.js'
+```
+
+> 將 URL 中的 `1.0.0` 替換為所需版本號即可切換版本。
+
+---
+
+### 本地引入（開發環境）
+
 直接在 HTML 用 `<script type="module">` 引入你需要的模組：
 
 ```html
