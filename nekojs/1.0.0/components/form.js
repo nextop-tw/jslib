@@ -120,9 +120,12 @@ export default class Form extends EventsMixin() {
     const action = this.#container.dataset.action || this.#form.action || location.href;
     const method = (this.#container.dataset.method || this.#form.method || 'post').toLowerCase();
 
+    const csrfToken = formData.get('_token');
+    const options = csrfToken ? { headers: { 'X-CSRF-TOKEN': csrfToken } } : {};
+
     this.#mask.show();
     try {
-      const response = await ajax[method](action, formData);
+      const response = await ajax[method](action, formData, options);
       await this.#handleResponse(response);
     } catch (err) {
       this.#mask.hide();

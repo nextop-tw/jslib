@@ -43,7 +43,22 @@
 
 ## 安裝
 
-無需安裝，直接用 ES Module 引入：
+無需安裝。透過 jsDelivr CDN 引入（指定版本號確保穩定）：
+
+```html
+<!-- Custom Element -->
+<script type="module" src="https://cdn.jsdelivr.net/gh/nextop-tw/jslib@main/nekojs/1.0.0/elements/neko.js"></script>
+
+<!-- 或 Vue 3 響應式版本 -->
+<script type="module" src="https://cdn.jsdelivr.net/gh/nextop-tw/jslib@main/nekojs/1.0.0/elements/neko-vue3.js"></script>
+
+<!-- 或打包版（IIFE，含全部模組） -->
+<script src="https://cdn.jsdelivr.net/gh/nextop-tw/jslib@main/nekojs/1.0.0/neko-app.min.js"></script>
+```
+
+> 將 URL 中的 `1.0.0` 替換為所需版本號即可切換版本。
+
+本地開發時可直接引入：
 
 ```html
 <script type="module" src="elements/neko.js"></script>
@@ -769,7 +784,15 @@ ajax.delete('/api/item/1')
 ```js
 ajax.setBaseURL('https://api.example.com')
 ajax.setHeaders({ 'X-Token': 'abc123' })
+
+// Laravel CSRF（靜態 token）
+ajax.setCsrf(document.querySelector('meta[name="csrf-token"]').content)
+
+// Laravel Sanctum SPA（動態讀 cookie，每次請求重新取值）
+ajax.setCsrf(() => decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] ?? ''))
 ```
+
+> `setCsrf()` 適用於 JSON 請求。使用 `Form` 元件時，CSRF token 會自動從 `@csrf` 產生的 `_token` 欄位提取，無需額外設定。
 
 #### 事件
 

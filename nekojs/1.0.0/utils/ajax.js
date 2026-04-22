@@ -14,6 +14,7 @@ import EventsMixin from '../core/events.js';
 class Ajax extends EventsMixin() {
   #baseURL = '';
   #defaultHeaders = { 'Content-Type': 'application/json' };
+  #csrf = null; // string | () => string
 
   /**
    * 設定 base URL
@@ -36,6 +37,25 @@ class Ajax extends EventsMixin() {
   }
 
   /**
+   * 設定 CSRF token 來源
+   * - 傳入字串：靜態 token（如 meta tag 讀取的值）
+   * - 傳入函式：動態 getter（如每次讀 cookie，適合 Laravel Sanctum）
+   * @param {string | () => string} tokenOrGetter
+   * @returns {this}
+   *
+   * @example
+   * // 靜態（meta tag）
+   * ajax.setCsrf(document.querySelector('meta[name="csrf-token"]').content)
+   *
+   * // 動態（cookie，適合 Laravel Sanctum SPA）
+   * ajax.setCsrf(() => document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] ?? '')
+   */
+  setCsrf(tokenOrGetter) {
+    this.#csrf = tokenOrGetter;
+    return this;
+  }
+
+  /**
    * 核心請求方法
    * @param {string} method
    * @param {string} url
@@ -45,14 +65,23 @@ class Ajax extends EventsMixin() {
    */
   async #request(method, url, data, options = {}) {
     const fullURL = this.#baseURL + url;
+
+    const csrfToken = typeof this.#csrf === 'function' ? this.#csrf() : this.#csrf;
+    const csrfHeader = csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {};
+
+    const isFormData = data instanceof FormData;
+    const baseHeaders = isFormData
+      ? (({ 'Content-Type': _, ...rest }) => rest)(this.#defaultHeaders)
+      : this.#defaultHeaders;
+
     const config = {
       method,
-      headers: { ...this.#defaultHeaders, ...options.headers },
+      headers: { ...baseHeaders, ...csrfHeader, ...options.headers },
       ...options,
     };
 
     if (data !== undefined) {
-      config.body = JSON.stringify(data);
+      config.body = isFormData ? data : JSON.stringify(data);
     }
 
     // 觸發 beforeRequest，可 return false 取消請求
