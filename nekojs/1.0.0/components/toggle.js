@@ -146,8 +146,7 @@ export default class Toggle extends EventsMixin() {
         this.#action = this.#el.dataset.action || '';
         this.#id     = this.#el.dataset.id     || null;
 
-        // adapter 優先順序：options.adapter > data-adapter > 'bootstrap'
-        const adapterKey = options.adapter || this.#el.dataset.adapter || 'bootstrap';
+        const adapterKey = options.adapter || this.#el.dataset.adapter || 'switchery';
         const adapter    = ADAPTERS[adapterKey] || bootstrapAdapter;
 
         // 非同步初始化（init 可能回傳 Promise，例如 switchery 需要載入 CDN）
